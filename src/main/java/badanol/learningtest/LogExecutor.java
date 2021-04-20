@@ -8,8 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 @Component
 public class LogExecutor implements CommandLineRunner {
@@ -27,8 +25,13 @@ public class LogExecutor implements CommandLineRunner {
 
         logger.info("Executing...");
 
-        String userInfo = Mono.fromFuture(requester.getUserInfo()).timeout(Duration.ofMillis(100000)).onErrorReturn("fallback").block();
-
+        String userInfo = Mono.fromFuture(requester.getUserInfo())
+                              .doOnNext(c -> logger.info(c))
+                              .timeout(Duration.ofMillis(5000))
+                              .doOnNext(c -> logger.info(c))
+                              .onErrorReturn("fallback")
+                              .doOnNext(c -> logger.info(c))
+                              .block();
       
         logger.info("User info: " + userInfo);        
     }      

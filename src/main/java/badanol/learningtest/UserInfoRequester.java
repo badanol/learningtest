@@ -8,11 +8,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-@Async
+@Async(AsyncConfig.LOG_THREAD_POOL_NAME)
 public class UserInfoRequester {
 
-    private static final Log logger = LogFactory.getLog(UserInfoRequester.class);
-    
+    private static final Log logger = LogFactory.getLog(UserInfoRequester.class);    
     
     public CompletableFuture<String> getUserInfo() throws InterruptedException {
 
